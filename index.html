@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>علم النفس - عالم الأفكار والمشاعر</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Tajawal:wght@300;400;500;700&family=Changa:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #2C3E50;
+            --primary-light: #34495E;
+            --accent-blue: #5DADE2;
+            --accent-green: #58D68D;
+            --accent-orange: #F39C12;
+            --bg-gradient: linear-gradient(135deg, #F8F9FA 0%, #E8F4F8 100%);
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--primary-dark);
+        }
+        
+        .hero-title {
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-title {
+            font-family: 'Changa', sans-serif;
+            font-weight: 600;
+        }
+        
+        .interactive-card {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .interactive-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(93, 173, 226, 0.2);
+        }
+        
+        .personality-question {
+            display: none;
+        }
+        
+        .personality-question.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .neural-bg {
+            background: radial-gradient(circle at 50% 50%, rgba(93, 173, 226, 0.1) 0%, transparent 70%);
+        }
+        
+        .glossary-item {
+            transition: all 0.2s ease;
+        }
+        
+        .glossary-item:hover {
+            background: rgba(93, 173, 226, 0.1);
+            transform: translateX(4px);
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 20px rgba(93, 173, 226, 0.3); }
+            to { box-shadow: 0 0 40px rgba(93, 173, 226, 0.6); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-8">
+                    <div class="text-2xl font-bold text-primary-dark">
+                        <span class="text-accent-blue">🧠</span> علم النفس
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#" class="text-primary-dark hover:text-accent-blue transition-colors font-medium">الرئيسية</a>
+                    <a href="theories.html" class="text-primary-dark hover:text-accent-blue transition-colors font-medium">النظريات</a>
+                    <a href="disorders.html" class="text-primary-dark hover:text-accent-blue transition-colors font-medium">الاضطرابات</a>
+                    <a href="therapy.html" class="text-primary-dark hover:text-accent-blue transition-colors font-medium">العلاج</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-primary-dark hover:text-accent-blue">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#" class="block px-3 py-2 text-primary-dark hover:text-accent-blue transition-colors">الرئيسية</a>
+                <a href="theories.html" class="block px-3 py-2 text-primary-dark hover:text-accent-blue transition-colors">النظريات</a>
+                <a href="disorders.html" class="block px-3 py-2 text-primary-dark hover:text-accent-blue transition-colors">الاضطرابات</a>
+                <a href="therapy.html" class="block px-3 py-2 text-primary-dark hover:text-accent-blue transition-colors">العلاج</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+        <div class="absolute inset-0 neural-bg"></div>
+        <div class="absolute inset-0">
+            <img src="resources/hero-psychology.jpg" alt="علم النفس" class="w-full h-full object-cover opacity-20">
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute top-20 left-10 floating-element">
+            <div class="w-8 h-8 bg-accent-blue/20 rounded-full pulse-glow"></div>
+        </div>
+        <div class="absolute top-40 right-20 floating-element" style="animation-delay: -2s;">
+            <div class="w-6 h-6 bg-accent-green/20 rounded-full pulse-glow"></div>
+        </div>
+        <div class="absolute bottom-40 left-20 floating-element" style="animation-delay: -4s;">
+            <div class="w-10 h-10 bg-accent-orange/20 rounded-full pulse-glow"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
+            <h1 class="hero-title text-6xl md:text-8xl mb-6 leading-tight">
+                عالم الأفكار
+                <br>
+                <span class="text-4xl md:text-6xl">والمشاعر</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-primary-light mb-8 max-w-3xl mx-auto leading-relaxed">
+                اكتشف أعماق العقل البشري واستكشف أسرار السلوك والشخصية من خلال رحلة تعليمية غامرة في عالم علم النفس
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button id="start-personality-test" class="interactive-card px-8 py-4 rounded-full text-white font-semibold text-lg bg-gradient-to-r from-accent-blue to-accent-green hover:from-accent-green hover:to-accent-blue transition-all duration-300 shadow-lg">
+                    ابدأ اختبار الشخصية
+                </button>
+                <a href="theories.html" class="interactive-card px-8 py-4 rounded-full text-primary-dark font-semibold text-lg border-2 border-accent-blue hover:bg-accent-blue hover:text-white transition-all duration-300">
+                    استكشاف النظريات
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personality Test Modal -->
+    <div id="personality-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="interactive-card max-w-2xl w-full mx-4 p-8 rounded-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="section-title text-2xl text-primary-dark">اختبار الشخصية</h3>
+                <button id="close-personality-test" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            
+            <div id="personality-test-content">
+                <!-- Question 1 -->
+                <div class="personality-question active" data-question="1">
+                    <h4 class="text-lg font-semibold mb-4 text-primary-dark">عندما تواجه مشكلة صعبة، ما هو أسلوبك المعتاد؟</h4>
+                    <div class="space-y-3">
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="analytical">
+                            أحلل الموقف بعناية وأبحث عن حل منطقي
+                        </button>
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="emotional">
+                            أعتمد على مشاعري وحدسي في اتخاذ القرار
+                        </button>
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="social">
+                            أستشير الآخرين وأبحث عن دعم اجتماعي
+                        </button>
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="avoidant">
+                            أميل لتجنب المواجهة وأبحث عن بدائل
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="personality-question" data-question="2">
+                    <h4 class="text-lg font-semibold mb-4 text-primary-dark">في العمل أو الدراسة، تفضل أن:</h4>
+                    <div class="space-y-3">
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="structured">
+                            أعمل وفق خطة منظمة وواضحة
+                        </button>
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="flexible">
+                            أحتفظ بمرونة وأتكيف مع الظروف
+                        </button>
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="creative">
+                            أبتكر حلولاً جديدة وغير تقليدية
+                        </button>
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="collaborative">
+                            أعمل ضمن فريق وأتشارك الأفكار
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="personality-question" data-question="3">
+                    <h4 class="text-lg font-semibold mb-4 text-primary-dark">في العلاقات الاجتماعية، أنت:</h4>
+                    <div class="space-y-3">
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="extrovert">
+                            اجتماعي وتستمتع بلقاء أناس جدد
+                        </button>
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="introvert">
+                            تفضل العلاقات العميقة مع عدد قليل
+                        </button>
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="ambassador">
+                            تميل لمساعدة الآخرين ودعمهم
+                        </button>
+                        <button class="answer-btn w-full text-right p-4 rounded-lg border-2 border-gray-200 hover:border-accent-blue transition-colors" data-value="leader">
+                            تميل للقيادة واتخاذ المبادرة
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div id="personality-results" class="hidden">
+                    <h4 class="text-xl font-semibold mb-4 text-primary-dark">تحليل شخصيتك</h4>
+                    <div id="personality-type" class="mb-4 p-6 rounded-lg bg-gradient-to-r from-accent-blue/10 to-accent-green/10">
+                        <h5 class="font-semibold text-lg mb-2"></h5>
+                        <p class="text-gray-700"></p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="p-4 bg-white rounded-lg border border-gray-200">
+                            <h6 class="font-semibold text-accent-blue mb-2">نقاط القوة</h6>
+                            <ul id="strengths-list" class="text-sm text-gray-600 space-y-1"></ul>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg border border-gray-200">
+                            <h6 class="font-semibold text-accent-orange mb-2">مجالات التطوير</h6>
+                            <ul id="development-list" class="text-sm text-gray-600 space-y-1"></ul>
+                        </div>
+                    </div>
+                    <button id="restart-test" class="w-full py-3 bg-accent-blue text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        إعادة الاختبار
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Psychology Overview -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">ما هو علم النفس؟</h2>
+                <p class="text-xl text-primary-light max-w-3xl mx-auto leading-relaxed">
+                    علم النفس هو الدراسة العلمية للسلوك والعمليات العقلية، يهدف إلى فهم كيفية عمل العقل البشري وأسباب تصرفاتنا ومشاعرنا
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="interactive-card p-6 rounded-2xl text-center">
+                    <div class="w-16 h-16 bg-accent-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🧠</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-primary-dark">العمليات المعرفية</h3>
+                    <p class="text-gray-600 text-sm">دراسة التفكير، الإدراك، الذاكرة، واتخاذ القرار</p>
+                </div>
+                
+                <div class="interactive-card p-6 rounded-2xl text-center">
+                    <div class="w-16 h-16 bg-accent-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">💭</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-primary-dark">الانفعالات</h3>
+                    <p class="text-gray-600 text-sm">فهم المشاعر، التنظيم الذاتي، والذكاء العاطفي</p>
+                </div>
+                
+                <div class="interactive-card p-6 rounded-2xl text-center">
+                    <div class="w-16 h-16 bg-accent-orange/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">👥</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-primary-dark">العلاقات الاجتماعية</h3>
+                    <p class="text-gray-600 text-sm">دراسة التفاعل الاجتماعي، العلاقات، والتأثير الجماعي</p>
+                </div>
+                
+                <div class="interactive-card p-6 rounded-2xl text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🌱</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-primary-dark">النمو والتطور</h3>
+                    <p class="text-gray-600 text-sm">فهم التغيرات النفسية عبر مراحل الحياة المختلفة</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Psychology Chart -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">مجالات علم النفس</h2>
+                <p class="text-xl text-primary-light max-w-3xl mx-auto">
+                    استكشف التوزيع المختلف لمجالات علم النفس وتفاعل مع البيانات
+                </p>
+            </div>
+            
+            <div class="interactive-card p-8 rounded-2xl">
+                <div id="psychology-chart" style="width: 100%; height: 400px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Psychology Matters -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">لماذا علم النفس مهم؟</h2>
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-accent-blue/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-accent-blue text-sm">✓</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg mb-2 text-primary-dark">فهم الذات والآخرين</h3>
+                                <p class="text-gray-600">يساعدنا على فهم دوافعنا، مشاعرنا، وسلوكياتنا، بالإضافة لفهم الآخرين حولنا</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-accent-green/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-accent-green text-sm">✓</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg mb-2 text-primary-dark">تحسين جودة الحياة</h3>
+                                <p class="text-gray-600">يوفر أدوات فعالة للتعامل مع التوتر، تحسين العلاقات، وتحقيق الرفاهية النفسية</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-accent-orange/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-accent-orange text-sm">✓</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg mb-2 text-primary-dark">تطوير المهارات</h3>
+                                <p class="text-gray-600">يعزز مهارات التواصل، حل المشكلات، واتخاذ القرار في مختلف مجالات الحياة</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-purple-600 text-sm">✓</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg mb-2 text-primary-dark">الوقاية والعلاج</h3>
+                                <p class="text-gray-600">يساهم في الوقاية من المشكلات النفسية ويوفر أسسًا علمية للعلاج والتأهيل</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <img src="resources/mental-health.jpg" alt="الصحة النفسية" class="w-full rounded-2xl shadow-2xl">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Glossary -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">المسرد التفاعلي</h2>
+                <p class="text-xl text-primary-light max-w-3xl mx-auto">
+                    ابحث عن المصطلحات النفسية واكتشف معانيها بسهولة
+                </p>
+            </div>
+            
+            <div class="interactive-card p-8 rounded-2xl">
+                <div class="mb-6">
+                    <input type="text" id="glossary-search" placeholder="ابحث عن مصطلح نفسي..." 
+                           class="w-full p-4 border-2 border-gray-200 rounded-lg focus:border-accent-blue focus:outline-none text-right">
+                </div>
+                
+                <div id="glossary-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Glossary items will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary-dark text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="mb-6">
+                <div class="text-3xl font-bold mb-2">
+                    <span class="text-accent-blue">🧠</span> علم النفس
+                </div>
+                <p class="text-gray-300">عالم الأفكار والمشاعر</p>
+            </div>
+            
+            <div class="border-t border-gray-600 pt-6">
+                <p class="text-gray-400">
+                    © 2024 تطبيق علم النفس التعليمي. جميع الحقوق محفوظة.
+                </p>
+                <p class="text-gray-500 text-sm mt-2">
+                    محتوى علمي مبني على أبحاث موثوقة ومصادر أكاديمية معتمدة
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

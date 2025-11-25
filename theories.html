@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>النظريات النفسية - عالم الأفكار والمشاعر</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Tajawal:wght@300;400;500;700&family=Changa:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #2C3E50;
+            --primary-light: #34495E;
+            --accent-blue: #5DADE2;
+            --accent-green: #58D68D;
+            --accent-orange: #F39C12;
+            --bg-gradient: linear-gradient(135deg, #F8F9FA 0%, #E8F4F8 100%);
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--primary-dark);
+        }
+        
+        .hero-title {
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-title {
+            font-family: 'Changa', sans-serif;
+            font-weight: 600;
+        }
+        
+        .interactive-card {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .interactive-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(93, 173, 226, 0.2);
+        }
+        
+        .timeline-item {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .timeline-item.active {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+        
+        .theory-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .theory-card:hover {
+            border-left-color: var(--accent-blue);
+            background: rgba(93, 173, 226, 0.05);
+        }
+        
+        .theory-detail {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        .theory-detail.active {
+            display: block;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .comparison-table {
+            overflow-x: auto;
+        }
+        
+        .comparison-table table {
+            min-width: 800px;
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .quiz-option {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .quiz-option:hover {
+            background: rgba(93, 173, 226, 0.1);
+            border-color: var(--accent-blue);
+        }
+        
+        .quiz-option.selected {
+            background: rgba(93, 173, 226, 0.2);
+            border-color: var(--accent-blue);
+        }
+        
+        .quiz-option.correct {
+            background: rgba(88, 214, 141, 0.2);
+            border-color: var(--accent-green);
+        }
+        
+        .quiz-option.incorrect {
+            background: rgba(231, 76, 60, 0.2);
+            border-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-8">
+                    <div class="text-2xl font-bold text-primary-dark">
+                        <span class="text-accent-blue">🧠</span> علم النفس
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-primary-dark hover:text-accent-blue transition-colors font-medium">الرئيسية</a>
+                    <a href="#" class="text-accent-blue font-semibold">النظريات</a>
+                    <a href="disorders.html" class="text-primary-dark hover:text-accent-blue transition-colors font-medium">الاضطرابات</a>
+                    <a href="therapy.html" class="text-primary-dark hover:text-accent-blue transition-colors font-medium">العلاج</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-primary-dark hover:text-accent-blue">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-primary-dark hover:text-accent-blue transition-colors">الرئيسية</a>
+                <a href="#" class="block px-3 py-2 text-accent-blue font-semibold">النظريات</a>
+                <a href="disorders.html" class="block px-3 py-2 text-primary-dark hover:text-accent-blue transition-colors">الاضطرابات</a>
+                <a href="therapy.html" class="block px-3 py-2 text-primary-dark hover:text-accent-blue transition-colors">العلاج</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative py-20 pt-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-accent-blue/10 to-accent-green/10"></div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute top-20 left-10 floating-element">
+            <div class="w-8 h-8 bg-accent-blue/20 rounded-full"></div>
+        </div>
+        <div class="absolute top-40 right-20 floating-element" style="animation-delay: -2s;">
+            <div class="w-6 h-6 bg-accent-green/20 rounded-full"></div>
+        </div>
+        <div class="absolute bottom-20 left-20 floating-element" style="animation-delay: -4s;">
+            <div class="w-10 h-10 bg-accent-orange/20 rounded-full"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 text-center">
+            <h1 class="hero-title text-5xl md:text-7xl mb-6">
+                النظريات النفسية
+            </h1>
+            <p class="text-xl md:text-2xl text-primary-light max-w-4xl mx-auto leading-relaxed">
+                استكشف رحلة تطور الفكر النفسي عبر العصور، من النظريات الكلاسيكية إلى الاكتشافات الحديثة
+            </p>
+        </div>
+    </section>
+
+    <!-- Interactive Timeline -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">الجدول الزمني التفاعلي</h2>
+                <p class="text-xl text-primary-light max-w-3xl mx-auto">
+                    انقر على النقاط الزمنية لاستكشاف تطور النظريات النفسية عبر التاريخ
+                </p>
+            </div>
+            
+            <div class="relative">
+                <!-- Timeline Line -->
+                <div class="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-accent-blue to-accent-green transform -translate-y-1/2"></div>
+                
+                <!-- Timeline Points -->
+                <div class="relative flex justify-between items-center">
+                    <div class="timeline-item w-16 h-16 bg-white border-4 border-accent-blue rounded-full flex items-center justify-center shadow-lg" 
+                         data-year="1879" data-theory="structuralism">
+                        <span class="text-sm font-bold text-accent-blue">1879</span>
+                    </div>
+                    
+                    <div class="timeline-item w-16 h-16 bg-white border-4 border-accent-green rounded-full flex items-center justify-center shadow-lg" 
+                         data-year="1890" data-theory="functionalism">
+                        <span class="text-sm font-bold text-accent-green">1890</span>
+                    </div>
+                    
+                    <div class="timeline-item w-16 h-16 bg-white border-4 border-accent-orange rounded-full flex items-center justify-center shadow-lg" 
+                         data-year="1900" data-theory="psychoanalysis">
+                        <span class="text-sm font-bold text-accent-orange">1900</span>
+                    </div>
+                    
+                    <div class="timeline-item w-16 h-16 bg-white border-4 border-purple-400 rounded-full flex items-center justify-center shadow-lg" 
+                         data-year="1913" data-theory="behaviorism">
+                        <span class="text-sm font-bold text-purple-600">1913</span>
+                    </div>
+                    
+                    <div class="timeline-item w-16 h-16 bg-white border-4 border-pink-400 rounded-full flex items-center justify-center shadow-lg" 
+                         data-year="1943" data-theory="humanistic">
+                        <span class="text-sm font-bold text-pink-600">1943</span>
+                    </div>
+                    
+                    <div class="timeline-item w-16 h-16 bg-white border-4 border-indigo-400 rounded-full flex items-center justify-center shadow-lg" 
+                         data-year="1950" data-theory="cognitive">
+                        <span class="text-sm font-bold text-indigo-600">1950</span>
+                    </div>
+                    
+                    <div class="timeline-item w-16 h-16 bg-white border-4 border-teal-400 rounded-full flex items-center justify-center shadow-lg" 
+                         data-year="1970" data-theory="modern">
+                        <span class="text-sm font-bold text-teal-600">1970</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timeline Details -->
+            <div id="timeline-details" class="mt-16">
+                <!-- Details will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Theory Categories -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">فئات النظريات النفسية</h2>
+                <p class="text-xl text-primary-light max-w-3xl mx-auto">
+                    استكشف النظريات النفسية حسب المدارس الفكرية المختلفة
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Psychoanalytic Theories -->
+                <div class="interactive-card p-6 rounded-2xl" data-category="psychoanalytic">
+                    <div class="w-16 h-16 bg-accent-orange/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🔍</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">النظريات التحليلية</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        تركز على اللاشعور، الصراعات الداخلية، وتأثير الطفولة على الشخصية
+                    </p>
+                    <div class="space-y-2">
+                        <div class="theory-tag px-3 py-1 bg-accent-orange/10 rounded-full text-xs text-center">
+                            فرويد - التحليل النفسي
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-accent-orange/10 rounded-full text-xs text-center">
+                            يونغ - التحليل التحليلي
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-accent-orange/10 rounded-full text-xs text-center">
+                            أدler - علم النفس الفردي
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Behavioral Theories -->
+                <div class="interactive-card p-6 rounded-2xl" data-category="behavioral">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🎯</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">النظريات السلوكية</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        تركز على السلوك القابل للملاحظة وكيفية تعلمه من خلال التجربة
+                    </p>
+                    <div class="space-y-2">
+                        <div class="theory-tag px-3 py-1 bg-purple-100 rounded-full text-xs text-center">
+                            بافلوف - التكيف الشرطي
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-purple-100 rounded-full text-xs text-center">
+                            سكنر - التعلم المعزز
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-purple-100 rounded-full text-xs text-center">
+                            واطسون - السلوكية
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Humanistic Theories -->
+                <div class="interactive-card p-6 rounded-2xl" data-category="humanistic">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🌱</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">النظريات الإنسانية</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        تركز على الإمكانات الإنسانية، النمو الشخصي، وتحقيق الذات
+                    </p>
+                    <div class="space-y-2">
+                        <div class="theory-tag px-3 py-1 bg-pink-100 rounded-full text-xs text-center">
+                            ماسلو - هرم الحاجات
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-pink-100 rounded-full text-xs text-center">
+                            روجرز - العلاج المتمركز
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-pink-100 rounded-full text-xs text-center">
+                            ماي - الوجودية
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cognitive Theories -->
+                <div class="interactive-card p-6 rounded-2xl" data-category="cognitive">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🧠</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">النظريات المعرفية</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        تركز على العمليات العقلية، التفكير، وكيفية معالجة المعلومات
+                    </p>
+                    <div class="space-y-2">
+                        <div class="theory-tag px-3 py-1 bg-indigo-100 rounded-full text-xs text-center">
+                            بياجيه - النمو المعرفي
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-indigo-100 rounded-full text-xs text-center">
+                            فيغوتسكي - النمو الاجتماعي
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-indigo-100 rounded-full text-xs text-center">
+                            باندورا - التعلم الاجتماعي
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Biological Theories -->
+                <div class="interactive-card p-6 rounded-2xl" data-category="biological">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🧬</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">النظريات البيولوجية</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        تركز على الأسس البيولوجية للسلوك، الدماغ، والوراثة
+                    </p>
+                    <div class="space-y-2">
+                        <div class="theory-tag px-3 py-1 bg-green-100 rounded-full text-xs text-center">
+                            داروين - التطور
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-green-100 rounded-full text-xs text-center">
+                            كاندل - التعلم العصبي
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-green-100 rounded-full text-xs text-center">
+                            سبراي - الانقسام الدماغي
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evolutionary Theories -->
+                <div class="interactive-card p-6 rounded-2xl" data-category="evolutionary">
+                    <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🌍</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">النظريات التطورية</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        تركز على كيفية تطور السلوك والعقل البشري عبر الزمن
+                    </p>
+                    <div class="space-y-2">
+                        <div class="theory-tag px-3 py-1 bg-teal-100 rounded-full text-xs text-center">
+                            كوسمايدز - علم النفس التطوري
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-teal-100 rounded-full text-xs text-center">
+                            تووبي - التكيف العقلي
+                        </div>
+                        <div class="theory-tag px-3 py-1 bg-teal-100 rounded-full text-xs text-center">
+                            بينكير - وظائف الدماغ
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Theory Comparison -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">مقارنة بين النظريات</h2>
+                <p class="text-xl text-primary-light max-w-3xl mx-auto">
+                    فهم الاختلافات والتشابهات بين المدارس النفسية المختلفة
+                </p>
+            </div>
+            
+            <div class="interactive-card p-8 rounded-2xl overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b-2 border-gray-200">
+                            <th class="text-right py-4 px-4 font-semibold text-primary-dark">المدرسة</th>
+                            <th class="text-right py-4 px-4 font-semibold text-primary-dark">التركيز</th>
+                            <th class="text-right py-4 px-4 font-semibold text-primary-dark">طبيعة الإنسان</th>
+                            <th class="text-right py-4 px-4 font-semibold text-primary-dark">العلاج</th>
+                            <th class="text-right py-4 px-4 font-semibold text-primary-dark">القادة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-medium text-accent-orange">التحليلية</td>
+                            <td class="py-4 px-4 text-gray-600">اللاشعور، الطفولة، الصراعات الداخلية</td>
+                            <td class="py-4 px-4 text-gray-600">مدفوع بالغرائز والصراعات</td>
+                            <td class="py-4 px-4 text-gray-600">التحليل النفسي</td>
+                            <td class="py-4 px-4 text-gray-600">فرويد، يونغ، أدلر</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-medium text-purple-600">السلوكية</td>
+                            <td class="py-4 px-4 text-gray-600">السلوك القابل للملاحظة، التعلم</td>
+                            <td class="py-4 px-4 text-gray-600">منتج للبيئة والتجربة</td>
+                            <td class="py-4 px-4 text-gray-600">التعديل السلوكي</td>
+                            <td class="py-4 px-4 text-gray-600">بافلوف، سكنر، واطسون</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-medium text-pink-600">الإنسانية</td>
+                            <td class="py-4 px-4 text-gray-600">النمو الشخصي، تحقيق الذات</td>
+                            <td class="py-4 px-4 text-gray-600">ذو إمكانات وقيمة ذاتية</td>
+                            <td class="py-4 px-4 text-gray-600">العلاج المتمركز حول العميل</td>
+                            <td class="py-4 px-4 text-gray-600">ماسلو، روجرز، ماي</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-medium text-indigo-600">الإدراكية</td>
+                            <td class="py-4 px-4 text-gray-600">العمليات العقلية، معالجة المعلومات</td>
+                            <td class="py-4 px-4 text-gray-600">معالج نشط للمعلومات</td>
+                            <td class="py-4 px-4 text-gray-600">العلاج الإدراكي السلوكي</td>
+                            <td class="py-4 px-4 text-gray-600">بياجيه، باندورا</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-medium text-green-600">البيولوجية</td>
+                            <td class="py-4 px-4 text-gray-600">الدماغ، الوراثة، الهرمونات</td>
+                            <td class="py-4 px-4 text-gray-600">منتج للتركيب البيولوجي</td>
+                            <td class="py-4 px-4 text-gray-600">العلاج الدوائي</td>
+                            <td class="py-4 px-4 text-gray-600">داروين، كاندل</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Quiz -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">اختبر معرفتك</h2>
+                <p class="text-xl text-primary-light">
+                    اختبار تفاعلي لفهم النظريات النفسية
+                </p>
+            </div>
+            
+            <div class="interactive-card p-8 rounded-2xl">
+                <div id="quiz-container">
+                    <div id="quiz-question" class="mb-6">
+                        <h3 class="text-xl font-semibold mb-4 text-primary-dark">أي نظرية تركز على اللاشعور وصراعات الطفولة؟</h3>
+                        <div class="space-y-3">
+                            <div class="quiz-option p-4 border-2 border-gray-200 rounded-lg" data-answer="psychoanalytic">
+                                أ) النظرية التحليلية
+                            </div>
+                            <div class="quiz-option p-4 border-2 border-gray-200 rounded-lg" data-answer="behavioral">
+                                ب) النظرية السلوكية
+                            </div>
+                            <div class="quiz-option p-4 border-2 border-gray-200 rounded-lg" data-answer="cognitive">
+                                ج) النظرية الإدراكية
+                            </div>
+                            <div class="quiz-option p-4 border-2 border-gray-200 rounded-lg" data-answer="humanistic">
+                                د) النظرية الإنسانية
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="quiz-feedback" class="hidden mb-6 p-4 rounded-lg">
+                        <p id="feedback-text" class="font-medium"></p>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <button id="quiz-submit" class="px-6 py-3 bg-accent-blue text-white rounded-lg hover:bg-blue-600 transition-colors">
+                            تحقق من الإجابة
+                        </button>
+                        <div class="text-sm text-gray-600">
+                            السؤال <span id="current-question">1</span> من <span id="total-questions">5</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="quiz-results" class="hidden text-center">
+                    <h3 class="text-2xl font-semibold mb-4 text-primary-dark">نتائج الاختبار</h3>
+                    <div class="mb-6">
+                        <div class="text-4xl font-bold text-accent-blue mb-2" id="final-score">0</div>
+                        <p class="text-gray-600">من 5</p>
+                    </div>
+                    <button id="restart-quiz" class="px-6 py-3 bg-accent-green text-white rounded-lg hover:bg-green-600 transition-colors">
+                        إعادة الاختبار
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary-dark text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="mb-6">
+                <div class="text-3xl font-bold mb-2">
+                    <span class="text-accent-blue">🧠</span> علم النفس
+                </div>
+                <p class="text-gray-300">عالم الأفكار والمشاعر</p>
+            </div>
+            
+            <div class="border-t border-gray-600 pt-6">
+                <p class="text-gray-400">
+                    © 2024 تطبيق علم النفس التعليمي. جميع الحقوق محفوظة.
+                </p>
+                <p class="text-gray-500 text-sm mt-2">
+                    محتوى علمي مبني على أبحاث موثوقة ومصادر أكاديمية معتمدة
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize theories page
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheoriesPage();
+        });
+
+        function initTheoriesPage() {
+            initTimeline();
+            initQuiz();
+            initMobileMenu();
+        }
+
+        // Timeline functionality
+        function initTimeline() {
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const detailsContainer = document.getElementById('timeline-details');
+            
+            const timelineData = {
+                '1879': {
+                    title: 'علم النفس التجريبي',
+                    theorist: 'فيلهلم فونت',
+                    description: 'تأسيس أول معمل لعلم النفس في لايبزج، ألمانيا. بداية علم النفس كعلم تجريبي مستقل.',
+                    keyPoints: ['التركيز على الوعي والتجارب الذاتية', 'استخدام المنهج التجريبي', 'تجزئة الوعي إلى عناصر أساسية'],
+                    impact: 'وضع الأسس لعلم النفس الحديث كعلم تجريبي مستقل عن الفلسفة.'
+                },
+                '1890': {
+                    title: 'الوظيفية النفسية',
+                    theorist: 'ويليام جيمس',
+                    description: 'التركيز على وظائف العقل والسلوك في التكيف مع البيئة بدلاً من تركيب الوعي.',
+                    keyPoints: ['دراسة الوظائف النفسية', 'التكيف مع البيئة', 'التأثير التطوري'],
+                    impact: 'فتح الباب لدراسة العمليات النفسية الوظيفية والتطبيقات العملية.'
+                },
+                '1900': {
+                    title: 'التحليل النفسي',
+                    theorist: 'سيجموند فرويد',
+                    description: 'تطوير نظرية التحليل النفسي مع التركيز على اللاشعور وصراعات الطفولة.',
+                    keyPoints: ['اللاشعور والرغبات المكبوتة', 'صراعات الطفولة', 'آليات الدفاع النفسي'],
+                    impact: 'ثورة في فهم الإنسان، أثر على العلاج النفسي والثقافة العامة.'
+                },
+                '1913': {
+                    title: 'السلوكية',
+                    theorist: 'جون واطسون',
+                    description: 'التركيز على السلوك القابل للملاحظة ورفض دراسة العمليات العقلية الداخلية.',
+                    keyPoints: ['السلوك القابل للملاحظة فقط', 'التعلم من خلال التجربة', 'التحكم البيئي'],
+                    impact: 'أحدث تغييراً جذرياً في المنهج النفسي، أثر على التعليم والعلاج.'
+                },
+                '1943': {
+                    title: 'علم النفس الإنساني',
+                    theorist: 'أبراهام ماسلو',
+                    description: 'التركيز على الإمكانات الإنسانية، النمو الشخصي، وتحقيق الذات.',
+                    keyPoints: ['تحقيق الذات', 'النمو الشخصي', 'القيمة الذاتية'],
+                    impact: 'أضاف البعد الإنساني والإيجابي لعلم النفس، أثر على التنمية البشرية.'
+                },
+                '1950': {
+                    title: 'الثورة الإدراكية',
+                    theorist: 'جان بياجيه',
+                    description: 'التركيز على العمليات العقلية، معالجة المعلومات، وكيفية بناء المعرفة.',
+                    keyPoints: ['العمليات العقلية', 'معالجة المعلومات', 'التطور المعرفي'],
+                    impact: 'أعاد الاهتمام بدراسة العقل والعمليات العقلية بمنهج علمي.'
+                },
+                '1970': {
+                    title: 'علم النفس الحديث',
+                    theorist: 'متعددون',
+                    description: 'التكامل بين المدارس المختلفة، النظريات العصبية، والتطبيقات العملية.',
+                    keyPoints: ['التكامل النظري', 'العلم العصبي', 'التطبيقات العملية'],
+                    impact: 'تطوير علم نفس متكامل يجمع بين النظريات والتطبيقات العملية.'
+                }
+            };
+            
+            timelineItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all items
+                    timelineItems.forEach(i => i.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Get data
+                    const year = this.getAttribute('data-year');
+                    const data = timelineData[year];
+                    
+                    // Display details
+                    if (data) {
+                        detailsContainer.innerHTML = `
+                            <div class="interactive-card p-8 rounded-2xl">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                    <div>
+                                        <h3 class="section-title text-3xl mb-4 text-primary-dark">${data.title}</h3>
+                                        <p class="text-lg font-semibold mb-4 text-accent-blue">${data.theorist}</p>
+                                        <p class="text-gray-700 mb-6 leading-relaxed">${data.description}</p>
+                                        
+                                        <h4 class="font-semibold mb-3 text-primary-dark">نقاط رئيسية:</h4>
+                                        <ul class="space-y-2">
+                                            ${data.keyPoints.map(point => `<li class="flex items-start"><span class="text-accent-green mr-2">•</span>${point}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                    
+                                    <div>
+                                        <div class="bg-gradient-to-br from-accent-blue/10 to-accent-green/10 p-6 rounded-xl">
+                                            <h4 class="font-semibold mb-3 text-primary-dark">الأثر التاريخي:</h4>
+                                            <p class="text-gray-700 leading-relaxed">${data.impact}</p>
+                                        </div>
+                                        
+                                        <div class="mt-6">
+                                            <img src="resources/psychology-books.jpg" alt="كتب علم النفس" class="w-full h-48 object-cover rounded-lg shadow-lg">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            });
+        }
+
+        // Quiz functionality
+        function initQuiz() {
+            const quizData = [
+                {
+                    question: 'أي نظرية تركز على اللاشعور وصراعات الطفولة؟',
+                    options: [
+                        { text: 'أ) النظرية التحليلية', correct: true },
+                        { text: 'ب) النظرية السلوكية', correct: false },
+                        { text: 'ج) النظرية الإدراكية', correct: false },
+                        { text: 'د) النظرية الإنسانية', correct: false }
+                    ],
+                    explanation: 'النظرية التحليلية التي طوّرها فرويد تركز على اللاشعور وكيفية تأثير صراعات الطفولة على الشخصية البالغة.'
+                },
+                {
+                    question: 'من هو مؤسس السلوكية؟',
+                    options: [
+                        { text: 'أ) سيجموند فرويد', correct: false },
+                        { text: 'ب) جون واطسون', correct: true },
+                        { text: 'ج) أبراهام ماسلو', correct: false },
+                        { text: 'د) جان بياجيه', correct: false }
+                    ],
+                    explanation: 'جون واطسون هو مؤسس السلوكية، وقد رفض دراسة العمليات العقلية الداخلية وركز على السلوك القابل للملاحظة فقط.'
+                },
+                {
+                    question: 'ما هي نظرية هرم الحاجات؟',
+                    options: [
+                        { text: 'أ) نظرية تحليلية', correct: false },
+                        { text: 'ب) نظرية سلوكية', correct: false },
+                        { text: 'ج) نظرية إنسانية', correct: true },
+                        { text: 'د) نظرية إدراكية', correct: false }
+                    ],
+                    explanation: 'نظرية هرم الحاجات طوّرها أبراهام ماسلو وتنتمي إلى المدرسة الإنسانية، تركز على تحقيق الذات كأعلى مستوى من الحاجات.'
+                },
+                {
+                    question: 'من طوّر نظرية النمو المعرفي؟',
+                    options: [
+                        { text: 'أ) بافلوف', correct: false },
+                        { text: 'ب) سكنر', correct: false },
+                        { text: 'ج) جان بياجيه', correct: true },
+                        { text: 'د) روجرز', correct: false }
+                    ],
+                    explanation: 'جان بياجيه طوّر نظرية النمو المعرفي التي تركز على كيفية تطور التفكير والمعرفة عند الأطفال عبر مراحل محددة.'
+                },
+                {
+                    question: 'ما الذي تميزت به "الثورة الإدراكية"؟',
+                    options: [
+                        { text: 'أ) التركيز على السلوك القابل للملاحظة', correct: false },
+                        { text: 'ب) العودة لدراسة العمليات العقلية', correct: true },
+                        { text: 'ج) التركيز على اللاشعور', correct: false },
+                        { text: 'د) رفض العلم النفسي', correct: false }
+                    ],
+                    explanation: 'الثورة الإدراكية تميزت بإعادة الاهتمام بدراسة العمليات العقلية بمنهج علمي، بعد فترة طويلة من هيمنة السلوكية.'
+                }
+            ];
+            
+            let currentQuiz = 0;
+            let score = 0;
+            
+            const submitBtn = document.getElementById('quiz-submit');
+            const restartBtn = document.getElementById('restart-quiz');
+            
+            if (submitBtn) {
+                submitBtn.addEventListener('click', function() {
+                    checkAnswer();
+                });
+            }
+            
+            if (restartBtn) {
+                restartBtn.addEventListener('click', function() {
+                    restartQuiz();
+                });
+            }
+            
+            function displayQuestion() {
+                const question = quizData[currentQuiz];
+                const container = document.getElementById('quiz-question');
+                
+                container.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-4 text-primary-dark">${question.question}</h3>
+                    <div class="space-y-3">
+                        ${question.options.map((option, index) => `
+                            <div class="quiz-option p-4 border-2 border-gray-200 rounded-lg" data-correct="${option.correct}">
+                                ${option.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                // Update progress
+                document.getElementById('current-question').textContent = currentQuiz + 1;
+                
+                // Add click handlers to options
+                const options = container.querySelectorAll('.quiz-option');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        options.forEach(opt => opt.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
+                });
+                
+                // Hide feedback
+                document.getElementById('quiz-feedback').classList.add('hidden');
+            }
+            
+            function checkAnswer() {
+                const selected = document.querySelector('.quiz-option.selected');
+                if (!selected) {
+                    alert('يرجى اختيار إجابة');
+                    return;
+                }
+                
+                const isCorrect = selected.getAttribute('data-correct') === 'true';
+                const options = document.querySelectorAll('.quiz-option');
+                
+                options.forEach(option => {
+                    const correct = option.getAttribute('data-correct') === 'true';
+                    if (correct) {
+                        option.classList.add('correct');
+                    } else if (option === selected && !isCorrect) {
+                        option.classList.add('incorrect');
+                    }
+                });
+                
+                if (isCorrect) {
+                    score++;
+                }
+                
+                // Show feedback
+                const feedback = document.getElementById('quiz-feedback');
+                const feedbackText = document.getElementById('feedback-text');
+                
+                feedback.className = `mb-6 p-4 rounded-lg ${isCorrect ? 'bg-green-100 border border-green-200' : 'bg-red-100 border border-red-200'}`;
+                feedbackText.className = `font-medium ${isCorrect ? 'text-green-800' : 'text-red-800'}`;
+                feedbackText.textContent = quizData[currentQuiz].explanation;
+                feedback.classList.remove('hidden');
+                
+                // Update button
+                const submitBtn = document.getElementById('quiz-submit');
+                if (currentQuiz < quizData.length - 1) {
+                    submitBtn.textContent = 'السؤال التالي';
+                    submitBtn.onclick = nextQuestion;
+                } else {
+                    submitBtn.textContent = 'عرض النتائج';
+                    submitBtn.onclick = showResults;
+                }
+            }
+            
+            function nextQuestion() {
+                currentQuiz++;
+                displayQuestion();
+                
+                const submitBtn = document.getElementById('quiz-submit');
+                submitBtn.textContent = 'تحقق من الإجابة';
+                submitBtn.onclick = checkAnswer;
+            }
+            
+            function showResults() {
+                document.getElementById('quiz-container').classList.add('hidden');
+                document.getElementById('quiz-results').classList.remove('hidden');
+                document.getElementById('final-score').textContent = score;
+            }
+            
+            function restartQuiz() {
+                currentQuiz = 0;
+                score = 0;
+                
+                document.getElementById('quiz-container').classList.remove('hidden');
+                document.getElementById('quiz-results').classList.add('hidden');
+                
+                const submitBtn = document.getElementById('quiz-submit');
+                submitBtn.textContent = 'تحقق من الإجابة';
+                submitBtn.onclick = checkAnswer;
+                
+                displayQuestion();
+            }
+            
+            // Initialize quiz
+            document.getElementById('total-questions').textContent = quizData.length;
+            displayQuestion();
+        }
+
+        // Mobile menu functionality
+        function initMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

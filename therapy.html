@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>العلاج النفسي - عالم الأفكار والمشاعر</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Tajawal:wght@300;400;500;700&family=Changa:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #2C3E50;
+            --primary-light: #34495E;
+            --accent-blue: #5DADE2;
+            --accent-green: #58D68D;
+            --accent-orange: #F39C12;
+            --bg-gradient: linear-gradient(135deg, #F8F9FA 0%, #E8F4F8 100%);
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--primary-dark);
+        }
+        
+        .hero-title {
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-title {
+            font-family: 'Changa', sans-serif;
+            font-weight: 600;
+        }
+        
+        .interactive-card {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .interactive-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(93, 173, 226, 0.2);
+        }
+        
+        .therapy-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .therapy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(93, 173, 226, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .therapy-card:hover::before {
+            left: 100%;
+        }
+        
+        .therapy-card:hover {
+            border-color: var(--accent-blue);
+            background: rgba(93, 173, 226, 0.05);
+        }
+        
+        .therapy-card.selected {
+            border-color: var(--accent-blue);
+            background: rgba(93, 173, 226, 0.1);
+        }
+        
+        .therapy-guide {
+            background: linear-gradient(135deg, rgba(88, 214, 141, 0.1) 0%, rgba(93, 173, 226, 0.1) 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .therapy-guide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(88, 214, 141, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .comparison-table {
+            overflow-x: auto;
+        }
+        
+        .comparison-table table {
+            min-width: 800px;
+        }
+        
+        .effectiveness-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .effectiveness-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+        
+        .effectiveness-high { background: var(--accent-green); }
+        .effectiveness-medium { background: var(--accent-orange); }
+        .effectiveness-low { background: #e74c3c; }
+        
+        .therapy-detail {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        .therapy-detail.active {
+            display: block;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .step-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            background: var(--accent-blue);
+            margin: 0 auto 1rem;
+        }
+        
+        .step-indicator.completed {
+            background: var(--accent-green);
+        }
+        
+        .step-indicator.active {
+            background: var(--accent-orange);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .resource-link {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .resource-link:hover {
+            border-color: var(--accent-blue);
+            background: rgba(93, 173, 226, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-8">
+                    <div class="text-2xl font-bold text-primary-dark">
+                        <span class="text-accent-blue">🧠</span> علم النفس
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-primary-dark hover:text-accent-blue transition-colors font-medium">الرئيسية</a>
+                    <a href="theories.html" class="text-primary-dark hover:text-accent-blue transition-colors font-medium">النظريات</a>
+                    <a href="disorders.html" class="text-primary-dark hover:text-accent-blue transition-colors font-medium">الاضطرابات</a>
+                    <a href="#" class="text-accent-blue font-semibold">العلاج</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-primary-dark hover:text-accent-blue">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-primary-dark hover:text-accent-blue transition-colors">الرئيسية</a>
+                <a href="theories.html" class="block px-3 py-2 text-primary-dark hover:text-accent-blue transition-colors">النظريات</a>
+                <a href="disorders.html" class="block px-3 py-2 text-primary-dark hover:text-accent-blue transition-colors">الاضطرابات</a>
+                <a href="#" class="block px-3 py-2 text-accent-blue font-semibold">العلاج</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative py-20 pt-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-green-100 to-blue-100"></div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute top-20 left-10 floating-element">
+            <div class="w-8 h-8 bg-green-200 rounded-full"></div>
+        </div>
+        <div class="absolute top-40 right-20 floating-element" style="animation-delay: -2s;">
+            <div class="w-6 h-6 bg-blue-200 rounded-full"></div>
+        </div>
+        <div class="absolute bottom-20 left-20 floating-element" style="animation-delay: -4s;">
+            <div class="w-10 h-10 bg-teal-200 rounded-full"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 text-center">
+            <h1 class="hero-title text-5xl md:text-7xl mb-6">
+                العلاج النفسي
+            </h1>
+            <p class="text-xl md:text-2xl text-primary-light max-w-4xl mx-auto leading-relaxed">
+                اكتشف أنواع العلاج النفسي المختلفة واختر الأنسب لاحتياجاتك من خلال أدوات تفاعلية ودليل شامل
+            </p>
+        </div>
+    </section>
+
+    <!-- Therapy Selection Guide -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">دليل اختيار العلاج</h2>
+                <p class="text-xl text-primary-light max-w-3xl mx-auto">
+                    أداة توجيهية تساعدك على فهم أنواع العلاج المختلفة واختيار الأنسب لحالتك
+                </p>
+            </div>
+            
+            <div class="therapy-guide">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Step 1: Identify Issues -->
+                    <div class="text-center">
+                        <div class="step-indicator active">1</div>
+                        <h3 class="text-lg font-semibold mb-4 text-primary-dark">حدد المشكلات</h3>
+                        <div class="space-y-3">
+                            <label class="flex items-center p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                                <input type="checkbox" class="mr-3 text-accent-blue" data-issue="anxiety">
+                                <span class="text-sm">القلق والتوتر المفرط</span>
+                            </label>
+                            <label class="flex items-center p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                                <input type="checkbox" class="mr-3 text-accent-blue" data-issue="depression">
+                                <span class="text-sm">الحزن وفقدان الاهتمام</span>
+                            </label>
+                            <label class="flex items-center p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                                <input type="checkbox" class="mr-3 text-accent-blue" data-issue="relationships">
+                                <span class="text-sm">مشكلات في العلاقات</span>
+                            </label>
+                            <label class="flex items-center p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                                <input type="checkbox" class="mr-3 text-accent-blue" data-issue="trauma">
+                                <span class="text-sm">صدمات وتجارب مؤلمة</span>
+                            </label>
+                            <label class="flex items-center p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                                <input type="checkbox" class="mr-3 text-accent-blue" data-issue="behavior">
+                                <span class="text-sm">سلوكيات غير مرغوبة</span>
+                            </label>
+                            <label class="flex items-center p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                                <input type="checkbox" class="mr-3 text-accent-blue" data-issue="stress">
+                                <span class="text-sm">ضغط نفسي وإجهاد</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Preferences -->
+                    <div class="text-center">
+                        <div class="step-indicator">2</div>
+                        <h3 class="text-lg font-semibold mb-4 text-primary-dark">اختر التفضيلات</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">مدى العلاج</label>
+                                <select class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-accent-blue focus:outline-none" id="duration-preference">
+                                    <option value="short">قصير المدى (6-12 جلسة)</option>
+                                    <option value="medium">متوسط المدى (3-6 أشهر)</option>
+                                    <option value="long">طويل المدى (6 أشهر فأكثر)</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">نمط الجلسات</label>
+                                <select class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-accent-blue focus:outline-none" id="style-preference">
+                                    <option value="structured">منظم وموجه بالواجبات</option>
+                                    <option value="flexible">مرن ومتكيف مع الاحتياجات</option>
+                                    <option value="supportive">داعم ومركز على المشاعر</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">التركيز الرئيسي</label>
+                                <select class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-accent-blue focus:outline-none" id="focus-preference">
+                                    <option value="present">التركيز على الحاضر والمستقبل</option>
+                                    <option value="past">فهم الماضي وعلاقته بالحاضر</option>
+                                    <option value="behavior">تغيير السلوكيات والأفكار</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Recommendations -->
+                    <div class="text-center">
+                        <div class="step-indicator">3</div>
+                        <h3 class="text-lg font-semibold mb-4 text-primary-dark">التوصيات</h3>
+                        <div id="therapy-recommendations" class="space-y-3">
+                            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <p class="text-gray-600 text-sm">يرجى تحديد المشكلات أولاً للحصول على توصيات مخصصة</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Therapy Types -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">أنواع العلاج النفسي</h2>
+                <p class="text-xl text-primary-light max-w-3xl mx-auto">
+                    استكشف الأساليب المختلفة للعلاج النفسي وفهم مميزات كل منها
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- CBT -->
+                <div class="therapy-card interactive-card p-6 rounded-2xl" data-therapy="cbt">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🧠</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">العلاج السلوكي المعرفي</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        يركز على تحديد وتغيير الأفكار والسلوكيات السلبية
+                    </p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span>الفعالية</span>
+                            <span>عالية</span>
+                        </div>
+                        <div class="effectiveness-bar">
+                            <div class="effectiveness-fill effectiveness-high" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+                            قصير إلى متوسط المدى
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Psychodynamic -->
+                <div class="therapy-card interactive-card p-6 rounded-2xl" data-therapy="psychodynamic">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🔍</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">العلاج التحليلي الديناميكي</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        يستكشف اللاشعور وعلاقات الطفولة وتأثيرها على الحاضر
+                    </p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span>الفعالية</span>
+                            <span>متوسطة إلى عالية</span>
+                        </div>
+                        <div class="effectiveness-bar">
+                            <div class="effectiveness-fill effectiveness-medium" style="width: 70%"></div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">
+                            طويل المدى
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Humanistic -->
+                <div class="therapy-card interactive-card p-6 rounded-2xl" data-therapy="humanistic">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🌱</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">العلاج الإنساني</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        يركز على النمو الشخصي وتحقيق الذات والقبول الذاتي
+                    </p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span>الفعالية</span>
+                            <span>متوسطة</span>
+                        </div>
+                        <div class="effectiveness-bar">
+                            <div class="effectiveness-fill effectiveness-medium" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs">
+                            متوسط إلى طويل المدى
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Family Therapy -->
+                <div class="therapy-card interactive-card p-6 rounded-2xl" data-therapy="family">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">👨‍👩‍👧‍👦</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">العلاج الأسري</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        يعمل على تحسين العلاقات الأسرية وديناميكيات التواصل
+                    </p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span>الفعالية</span>
+                            <span>متوسطة إلى عالية</span>
+                        </div>
+                        <div class="effectiveness-bar">
+                            <div class="effectiveness-fill effectiveness-medium" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span class="inline-block px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs">
+                            قصير إلى متوسط المدى
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Group Therapy -->
+                <div class="therapy-card interactive-card p-6 rounded-2xl" data-therapy="group">
+                    <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">👥</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">العلاج الجماعي</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        يستفيد من الدعم الجماعي وتبادل الخبرات بين المشاركين
+                    </p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span>الفعالية</span>
+                            <span>متوسطة</span>
+                        </div>
+                        <div class="effectiveness-bar">
+                            <div class="effectiveness-fill effectiveness-medium" style="width: 68%"></div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span class="inline-block px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-xs">
+                            متوسط المدى
+                        </span>
+                    </div>
+                </div>
+
+                <!-- EMDR -->
+                <div class="therapy-card interactive-card p-6 rounded-2xl" data-therapy="emdr">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">👁️</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center text-primary-dark">EMDR</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        علاج متخصص للصدمات والذكريات المؤلمة
+                    </p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span>الفعالية</span>
+                            <span>عالية</span>
+                        </div>
+                        <div class="effectiveness-bar">
+                            <div class="effectiveness-fill effectiveness-high" style="width: 82%"></div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs">
+                            قصير المدى
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Therapy Comparison -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">مقارنة بين أنواع العلاج</h2>
+                <p class="text-xl text-primary-light max-w-3xl mx-auto">
+                    فهم الاختلافات بين الأساليب العلاجية لاختيار الأنسب لك
+                </p>
+            </div>
+            
+            <div class="interactive-card p-8 rounded-2xl overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b-2 border-gray-200">
+                            <th class="text-right py-4 px-4 font-semibold text-primary-dark">نوع العلاج</th>
+                            <th class="text-right py-4 px-4 font-semibold text-primary-dark">التركيز</th>
+                            <th class="text-right py-4 px-4 font-semibold text-primary-dark">المدة</th>
+                            <th class="text-right py-4 px-4 font-semibold text-primary-dark">الفعالية</th>
+                            <th class="text-right py-4 px-4 font-semibold text-primary-dark">الأفضل لـ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-medium text-blue-600">السلوكي المعرفي</td>
+                            <td class="py-4 px-4 text-gray-600">الأفكار والسلوكيات</td>
+                            <td class="py-4 px-4 text-gray-600">قصير إلى متوسط</td>
+                            <td class="py-4 px-4 text-gray-600">عالية (85%)</td>
+                            <td class="py-4 px-4 text-gray-600">القلق، الاكتئاب، الوسواس</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-medium text-purple-600">التحليلي الديناميكي</td>
+                            <td class="py-4 px-4 text-gray-600">اللاشعور والماضي</td>
+                            <td class="py-4 px-4 text-gray-600">طويل</td>
+                            <td class="py-4 px-4 text-gray-600">متوسطة (70%)</td>
+                            <td class="py-4 px-4 text-gray-600">مشكلات الشخصية العميقة</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-medium text-green-600">الإنساني</td>
+                            <td class="py-4 px-4 text-gray-600">النمو والذات</td>
+                            <td class="py-4 px-4 text-gray-600">متوسط إلى طويل</td>
+                            <td class="py-4 px-4 text-gray-600">متوسطة (65%)</td>
+                            <td class="py-4 px-4 text-gray-600">مشكلات الهوية والثقة</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-medium text-orange-600">الأسري</td>
+                            <td class="py-4 px-4 text-gray-600">العلاقات الأسرية</td>
+                            <td class="py-4 px-4 text-gray-600">قصير إلى متوسط</td>
+                            <td class="py-4 px-4 text-gray-600">عالية (75%)</td>
+                            <td class="py-4 px-4 text-gray-600">مشكلات أسرية وزوجية</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-medium text-teal-600">الجماعي</td>
+                            <td class="py-4 px-4 text-gray-600">الدعم الجماعي</td>
+                            <td class="py-4 px-4 text-gray-600">متوسط</td>
+                            <td class="py-4 px-4 text-gray-600">متوسطة (68%)</td>
+                            <td class="py-4 px-4 text-gray-600">الدعم والتفاعل الاجتماعي</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-medium text-indigo-600">EMDR</td>
+                            <td class="py-4 px-4 text-gray-600">الصدمات والذكريات</td>
+                            <td class="py-4 px-4 text-gray-600">قصير</td>
+                            <td class="py-4 px-4 text-gray-600">عالية (82%)</td>
+                            <td class="py-4 px-4 text-gray-600">اضطراب ما بعد الصدمة</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Finding a Therapist -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">كيف تجد المعالج المناسب؟</h2>
+                <p class="text-xl text-primary-light max-w-3xl mx-auto">
+                    خطوات عملية للعثور على معالج نفسي موثوق ومناسب لاحتياجاتك
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🔍</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-primary-dark">البحث والتقصي</h3>
+                    <ul class="text-sm text-gray-600 space-y-2 text-right">
+                        <li>• استخدم دلائل المعالجين المعتمدين</li>
+                        <li>• اطلب توصيات من الأطباء</li>
+                        <li>• تحقق من الشهادات والتراخيص</li>
+                        <li>• اقرأ التقييمات والمراجعات</li>
+                    </ul>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">📞</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-primary-dark">التواصل الأولي</h3>
+                    <ul class="text-sm text-gray-600 space-y-2 text-right">
+                        <li>• اتصل للاستفسار الأولي</li>
+                        <li>• اسأل عن الخبرة والتخصص</li>
+                        <li>• استفسر عن الأساليب المستخدمة</li>
+                        <li>• تحقق من التوافق الزمني</li>
+                    </ul>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🤝</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-primary-dark">الجلسة التجريبية</h3>
+                    <ul class="text-sm text-gray-600 space-y-2 text-right">
+                        <li>• تقييم الارتياح والثقة</li>
+                        <li>• فهم أسلوب التواصل</li>
+                        <li>• مناقشة الخطة العلاجية</li>
+                        <li>• تقييم المهنية والاحترام</li>
+                    </ul>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">✅</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-primary-dark">اتخاذ القرار</h3>
+                    <ul class="text-sm text-gray-600 space-y-2 text-right">
+                        <li>• ثق بحدسك في الاختيار</li>
+                        <li>• تأكد من الشعور بالأمان</li>
+                        <li>• وضوح الأهداف والتوقعات</li>
+                        <li>• استعداد للالتزام بالعلاج</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-white p-8 rounded-2xl border border-gray-200">
+                <h3 class="text-xl font-semibold mb-6 text-primary-dark text-center">أسئلة مهمة لطرحها على المعالج</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold mb-3 text-blue-600">الخبرة والتخصص</h4>
+                        <ul class="text-sm text-gray-700 space-y-2">
+                            <li>• ما هو تخصصك الرئيسي؟</li>
+                            <li>• كم لديك من الخبرة في علاج حالتي؟</li>
+                            <li>• هل لديك شهادات إضافية؟</li>
+                            <li>• هل تعالج حالات مشابهة لحالتي؟</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold mb-3 text-green-600">الأسلوب والنهج</h4>
+                        <ul class="text-sm text-gray-700 space-y-2">
+                            <li>• ما هو أسلوبك في العلاج؟</li>
+                            <li>• كيف تخطط لمساعدتي؟</li>
+                            <li>• ما هي توقعاتك مني؟</li>
+                            <li>• كيف تقيس التقدم؟</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold mb-3 text-purple-600">العملية العلاجية</h4>
+                        <ul class="text-sm text-gray-700 space-y-2">
+                            <li>• كم تستغرق الجلسة؟</li>
+                            <li>• كم مرة نلتقي في الأسبوع؟</li>
+                            <li>• ما هي سياسة الإلغاء؟</li>
+                            <li>• هل هناك واجبات منزلية؟</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold mb-3 text-orange-600">الالتزام والنتائج</h4>
+                        <ul class="text-sm text-gray-700 space-y-2">
+                            <li>• متى أتوقع رؤية تحسن؟</li>
+                            <li>• ما هو متوسط مدة العلاج؟</li>
+                            <li>• كيف نحدد الأهداف؟</li>
+                            <li>• ماذا لو لم أشعر بتحسن؟</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources and Support -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-4xl md:text-5xl mb-6 text-primary-dark">الموارد والدعم</h2>
+                <p class="text-xl text-primary-light max-w-3xl mx-auto">
+                    مصادر إضافية للمساعدة في رحلتك العلاجية
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="resource-link interactive-card p-6 rounded-2xl">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🚨</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-center text-primary-dark">الطوارئ النفسية</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        خطوط مساعدة متاحة 24/7 للأزمات النفسية
+                    </p>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-700 mb-2">
+                            <strong>الخط الساخن:</strong> 9200 333 123
+                        </div>
+                        <div class="text-xs text-gray-600">
+                            متاح على مدار الساعة
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-link interactive-card p-6 rounded-2xl">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">💬</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-center text-primary-dark">الدردشة الإلكترونية</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        دعم نفسي عبر الإنترنت بسرية تامة
+                    </p>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-700 mb-2">
+                            <strong>موقع الدعم:</strong> www.dawah.psychology.sa
+                        </div>
+                        <div class="text-xs text-gray-600">
+                            دردشة فورية مع مختصين
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-link interactive-card p-6 rounded-2xl">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">📚</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-center text-primary-dark">الموارد التعليمية</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        مقالات، فيديوهات، وأدوات تعليمية
+                    </p>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-700 mb-2">
+                            <strong>المكتبة الرقمية:</strong> مجانية بالكامل
+                        </div>
+                        <div class="text-xs text-gray-600">
+                            محتوى موثوق ومراجع
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-link interactive-card p-6 rounded-2xl">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🏥</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-center text-primary-dark">المراكز المتخصصة</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        دليل مراكز العلاج النفسي المعتمدة
+                    </p>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-700 mb-2">
+                            <strong>البحث حسب المنطقة:</strong> سهل وسريع
+                        </div>
+                        <div class="text-xs text-gray-600">
+                            معايير جودة مضمونة
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-link interactive-card p-6 rounded-2xl">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🧘‍♀️</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-center text-primary-dark">تقنيات الاسترخاء</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        تمارين وأساليب للتعامل مع التوتر
+                    </p>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-700 mb-2">
+                            <strong>تطبيقات وتسجيلات:</strong> متنوعة المستويات
+                        </div>
+                        <div class="text-xs text-gray-600">
+                            متاحة في أي وقت
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-link interactive-card p-6 rounded-2xl">
+                    <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">🤝</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3 text-center text-primary-dark">مجموعات الدعم</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">
+                        مجتمعات دعم نفسي عبر الإنترنت
+                    </p>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-700 mb-2">
+                            <strong>مجموعات متخصصة:</strong> لكل حالة
+                        </div>
+                        <div class="text-xs text-gray-600">
+                            بيئة آمنة وداعمة
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary-dark text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="mb-6">
+                <div class="text-3xl font-bold mb-2">
+                    <span class="text-accent-blue">🧠</span> علم النفس
+                </div>
+                <p class="text-gray-300">عالم الأفكار والمشاعر</p>
+            </div>
+            
+            <div class="border-t border-gray-600 pt-6">
+                <p class="text-gray-400">
+                    © 2024 تطبيق علم النفس التعليمي. جميع الحقوق محفوظة.
+                </p>
+                <p class="text-gray-500 text-sm mt-2">
+                    محتوى علمي مبني على أبحاث موثوقة ومصادر أكاديمية معتمدة
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize therapy page
+        document.addEventListener('DOMContentLoaded', function() {
+            initTherapyPage();
+        });
+
+        function initTherapyPage() {
+            initTherapyGuide();
+            initTherapyCards();
+            initMobileMenu();
+        }
+
+        // Therapy guide functionality
+        function initTherapyGuide() {
+            const checkboxes = document.querySelectorAll('[data-issue]');
+            const durationSelect = document.getElementById('duration-preference');
+            const styleSelect = document.getElementById('style-preference');
+            const focusSelect = document.getElementById('focus-preference');
+            const recommendationsDiv = document.getElementById('therapy-recommendations');
+            
+            // Add event listeners
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateRecommendations);
+            });
+            
+            if (durationSelect) durationSelect.addEventListener('change', updateRecommendations);
+            if (styleSelect) styleSelect.addEventListener('change', updateRecommendations);
+            if (focusSelect) focusSelect.addEventListener('change', updateRecommendations);
+        }
+
+        function updateRecommendations() {
+            const checkboxes = document.querySelectorAll('[data-issue]:checked');
+            const duration = document.getElementById('duration-preference')?.value;
+            const style = document.getElementById('style-preference')?.value;
+            const focus = document.getElementById('focus-preference')?.value;
+            
+            const selectedIssues = Array.from(checkboxes).map(cb => cb.getAttribute('data-issue'));
+            
+            if (selectedIssues.length === 0) {
+                document.getElementById('therapy-recommendations').innerHTML = `
+                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <p class="text-gray-600 text-sm">يرجى تحديد المشكلات أولاً للحصول على توصيات مخصصة</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const recommendations = getTherapyRecommendations(selectedIssues, duration, style, focus);
+            displayRecommendations(recommendations);
+        }
+
+        function getTherapyRecommendations(issues, duration, style, focus) {
+            const therapyMatrix = {
+                anxiety: ['cbt', 'humanistic', 'group'],
+                depression: ['cbt', 'psychodynamic', 'humanistic'],
+                relationships: ['family', 'group', 'humanistic'],
+                trauma: ['emdr', 'psychodynamic', 'cbt'],
+                behavior: ['cbt', 'family', 'group'],
+                stress: ['cbt', 'humanistic', 'group']
+            };
+            
+            const therapyData = {
+                cbt: {
+                    name: 'العلاج السلوكي المعرفي',
+                    description: 'فعال جداً للقلق والاكتئاب وقضايا السلوك',
+                    effectiveness: 85,
+                    duration: 'short-medium'
+                },
+                psychodynamic: {
+                    name: 'العلاج التحليلي الديناميكي',
+                    description: 'ممتاز لفهم الجذور العميقة للمشكلات',
+                    effectiveness: 70,
+                    duration: 'long'
+                },
+                humanistic: {
+                    name: 'العلاج الإنساني',
+                    description: 'مفيد لقضايا الهوية والنمو الشخصي',
+                    effectiveness: 65,
+                    duration: 'medium-long'
+                },
+                family: {
+                    name: 'العلاج الأسري',
+                    description: 'مثالي لمشكلات العلاقات والأسرة',
+                    effectiveness: 75,
+                    duration: 'short-medium'
+                },
+                group: {
+                    name: 'العلاج الجماعي',
+                    description: 'مفيد للدعم الاجتماعي وتبادل الخبرات',
+                    effectiveness: 68,
+                    duration: 'medium'
+                },
+                emdr: {
+                    name: 'EMDR',
+                    description: 'متخصص للصدمات والذكريات المؤلمة',
+                    effectiveness: 82,
+                    duration: 'short'
+                }
+            };
+            
+            let scores = {};
+            
+            // Calculate scores based on issues
+            issues.forEach(issue => {
+                if (therapyMatrix[issue]) {
+                    therapyMatrix[issue].forEach(therapy => {
+                        scores[therapy] = (scores[therapy] || 0) + 1;
+                    });
+                }
+            });
+            
+            // Adjust based on preferences
+            Object.keys(scores).forEach(therapy => {
+                const data = therapyData[therapy];
+                
+                // Duration preference
+                if (duration === 'short' && data.duration.includes('short')) scores[therapy] += 0.5;
+                if (duration === 'long' && data.duration.includes('long')) scores[therapy] += 0.5;
+                
+                // Style preference
+                if (style === 'structured' && therapy === 'cbt') scores[therapy] += 0.5;
+                if (style === 'flexible' && therapy === 'humanistic') scores[therapy] += 0.5;
+                if (style === 'supportive' && therapy === 'humanistic') scores[therapy] += 0.5;
+                
+                // Focus preference
+                if (focus === 'present' && therapy === 'cbt') scores[therapy] += 0.5;
+                if (focus === 'past' && therapy === 'psychodynamic') scores[therapy] += 0.5;
+                if (focus === 'behavior' && therapy === 'cbt') scores[therapy] += 0.5;
+            });
+            
+            // Sort by score and return top 3
+            return Object.entries(scores)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 3)
+                .map(([therapy, score]) => ({
+                    id: therapy,
+                    ...therapyData[therapy],
+                    score: score
+                }));
+        }
+
+        function displayRecommendations(recommendations) {
+            const container = document.getElementById('therapy-recommendations');
+            
+            if (recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <p class="text-gray-600 text-sm">لا توجد توصيات متاحة حالياً</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = recommendations.map((rec, index) => `
+                <div class="p-4 bg-white rounded-lg border-2 border-blue-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-blue-800">${index + 1}. ${rec.name}</h4>
+                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                            توافق ${Math.round((rec.score / (recommendations[0].score || 1)) * 100)}%
+                        </span>
+                    </div>
+                    <p class="text-sm text-gray-700 mb-2">${rec.description}</p>
+                    <div class="flex justify-between text-xs text-gray-600">
+                        <span>الفعالية: ${rec.effectiveness}%</span>
+                        <span>المدة: ${getDurationText(rec.duration)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getDurationText(duration) {
+            const durationMap = {
+                'short': 'قصيرة',
+                'medium': 'متوسطة',
+                'long': 'طويلة',
+                'short-medium': 'قصيرة إلى متوسطة',
+                'medium-long': 'متوسطة إلى طويلة'
+            };
+            return durationMap[duration] || duration;
+        }
+
+        // Therapy cards functionality
+        function initTherapyCards() {
+            const therapyCards = document.querySelectorAll('.therapy-card[data-therapy]');
+            
+            therapyCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    therapyCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    
+                    // You could show detailed information here
+                    const therapyType = this.getAttribute('data-therapy');
+                    console.log('Selected therapy:', therapyType);
+                });
+            });
+        }
+
+        // Mobile menu functionality
+        function initMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
